@@ -119,23 +119,23 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
   
   calculateRoutes: async () => {
-    const { origin, destination, avoidTolls, avoidTraffic } = get();
-    
+    const { origin, destination/*, avoidTolls, avoidTraffic*/ } = get();
+
     if (!origin || !destination) return;
-    
+
     set({ isLoading: true });
-    
+
     try {
       // Calculate main and alternative routes
-      const mainRoute = calculateRoute(origin, destination, get().weatherConditions, false, { avoidTolls, avoidTraffic });
-      const altRoute = calculateRoute(origin, destination, get().weatherConditions, true, { avoidTolls, avoidTraffic });
-      
+      const mainRoute = calculateRoute(origin, destination, get().weatherConditions, false);
+      const altRoute = calculateRoute(origin, destination, get().weatherConditions, true);
+
       // Fetch weather data along both routes
       const [mainWeather, altWeather] = await Promise.all([
         fetchRouteWeather(mainRoute.coordinates),
         fetchRouteWeather(altRoute.coordinates)
       ]);
-      
+
       // Update routes with weather information
       set({
         currentRoute: {
